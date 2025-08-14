@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AmazingIntegration</string>
+    <string name="quest_loading_failed">페이지를 불러올 수 없습니다. 네트워크를 확인해 주세요.</string>
+</resources>

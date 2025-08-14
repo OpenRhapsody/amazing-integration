@@ -3,6 +3,10 @@
 ## 개요
 Amazing Quest(quest.adrop.io) 플랫폼을 Android 앱에 통합하기 위한 WebView 기반 예제 애플리케이션입니다. SDK 없이 순수 WebView를 사용하여 구현되었습니다.
 
+### 통합 방법
+**소스 파일 복사**: `AmazingWebViewActivity.kt` 파일을 프로젝트에 추가
+**즉시 사용 가능**: 복사한 클래스를 바로 사용하여 연동 완료
+
 ## 주요 기능
 
 ### 1. WebView 통합
@@ -20,7 +24,7 @@ Amazing Quest(quest.adrop.io) 플랫폼을 Android 앱에 통합하기 위한 We
 ### 3. JavaScript 브리지
 ```javascript
 // 웹에서 앱 버전 정보 가져오기
-const version = await window.bridge.request('getAppVersion');
+const version = await window.bridge.callHandler('getAppVersion', 'getAppVersion');
 // 반환값: "android/1.3.20/1.0.0"
 
 // 웹에서 앱 닫기
@@ -39,7 +43,19 @@ window.Android.close();
 - WebView 히스토리가 있으면 웹 페이지 뒤로 가기
 - 히스토리가 없을 때만 앱 종료
 
+### 7. 네트워크 에러 처리
+- 5초 이내 페이지 로드 실패 시 알림 표시
+- 네트워크 연결 확인 메시지 표시
+- AmazingWebViewActivity 자동 닫기
+
+
 ## 기술 사양
+
+### 빌드 설정
+- **Compile SDK**: 35
+- **Min SDK**: 24 (Android 7.0)
+- **Target SDK**: 35
+- **Kotlin JVM Target**: 11
 
 ### WebView 설정
 ```kotlin
@@ -49,6 +65,7 @@ webSettings.apply {
     mediaPlaybackRequiresUserGesture = false
     allowFileAccess = true
     allowContentAccess = true
+    textZoom = 100
 }
 ```
 
@@ -58,37 +75,51 @@ webSettings.apply {
 ```
 
 ### 의존성
-- AndroidX 라이브러리만 사용
-- 외부 SDK 없음
-- 최소한의 의존성 구성
+```kotlin
+dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+}
+```
 
 ## 구현 상세
 
 ### 도메인 검증
 ```kotlin
 // adrop.io 및 모든 서브도메인 검증
-val pattern = "^([a-zA-Z0-9-]+\\.)*adrop\\.io$".toRegex()
+val isAdropHost = Regex("""^([a-zA-Z0-9-]+\.)*adrop\.io$""").matches(host)
 ```
 
 ### JavaScript 인터페이스
-1. **AmazingAndroid**: 앱 종료 기능
+1. **Android Interface**: 앱 제어 기능
    ```kotlin
    @JavascriptInterface
    fun close() {
        finish()
    }
+   
+   @JavascriptInterface
+   fun callHandler(requestId: String, sig: String) {
+       when (sig) {
+           "getAppVersion" -> {
+               val version = "android/${sdkVersion}/${appVersion}"
+               // JavaScript로 결과 반환
+           }
+       }
+   }
    ```
 
-2. **AmazingJSBridge**: 양방향 통신
-   - Promise 기반 비동기 통신
-   - `getAppVersion`: 버전 정보 반환
-   ```kotlin
-   @JavascriptInterface
-   fun request(action: String, args: String?): String {
-       // Promise 기반 처리
-       return when (action) {
-           "getAppVersion" -> "android/$sdkVersion/$appVersion"
-           else -> ""
+2. **JavaScript Bridge**: Promise 기반 양방향 통신
+   ```javascript
+   window.bridge = {
+       callHandler: function(name, sig, payload) {
+           return new Promise((resolver, reject) => {
+               // Android 네이티브 메서드 호출
+               window.Android.callHandler(requestId, sig)
+           })
        }
    }
    ```
@@ -99,15 +130,19 @@ val pattern = "^([a-zA-Z0-9-]+\\.)*adrop\\.io$".toRegex()
 
 ## 사용 방법
 
-1. 프로젝트를 Android Studio에서 열기
-2. 필요한 경우 `MainActivity.kt`의 URL 수정
+1. Android Studio에서 프로젝트 열기
+2. Gradle 동기화 실행
 3. 앱 빌드 및 실행
+   ```bash
+   gradle assembleDebug
+   ```
 
 ## 주의사항
 
 - WebView 기반이므로 인터넷 연결 필수
 - JavaScript가 활성화되어 있어야 정상 작동
-- Android 5.0 (API 21) 이상 지원
+- Android 7.0 (API 24) 이상 지원
+- `forceDark` 설정은 Android Q(API 29) 이상에서 deprecated
 
 ## 버전 정보
 - SDK 버전: 1.3.20

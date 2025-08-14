@@ -7,18 +7,11 @@
         android:layout_height="match_parent"
         android:background="#FFFFFF">
 
-    <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:indeterminate="true"
-            android:indeterminateTint="#E3E7F2"
+    <Button
+            android:id="@+id/open_webview_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Open Amazing WebView"
             android:layout_centerInParent="true"/>
-
-    <WebView
-            android:id="@+id/webview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
 
 </RelativeLayout>

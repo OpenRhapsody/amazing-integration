@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AmazingIntegration</string>
+    <string name="quest_loading_failed">Unable to load the page. Please check your network.</string>
 </resources>
