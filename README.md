@@ -1,13 +1,16 @@
 # Amazing Integration Guide
 
-## 개요
+## 📱 모바일 WebView 연동
+iOS/Android 앱에서 Amazing Quest를 간편하게 통합할 수 있습니다.
 
-사용자가 퀘스트를 완료하면, 어메이징 서버에서 매체 서버로 퀘스트 완료 API를 호출하여 리워드를 지급합니다. 요청을 받은 매체 서버는 다음 작업을 수행합니다:
+- **[iOS 연동 가이드](src/ios/AmazingIntegration/AmazingIntegration/README.md)** - Swift 기반 WebView 통합
+- **[Android 연동 가이드](src/android/README.md)** - Kotlin/Java 기반 WebView 통합
 
-- 사용자에게 리워드 지급
-- 완료 이력 기록
-
-API 호출 시 보안을 위해 HMAC(Hash-based Message Authentication Code)을 사용하며, HMAC 생성 및 검증 방법은 아래에서 설명합니다.
+## 🔌 리워드 API 연동
+사용자가 퀘스트를 완료하면 Amazing 서버에서 매체사 서버로 콜백 API를 호출합니다. 요청을 받은 매체 서버는 다음 작업을 수행합니다:
+1. **리워드 지급** - 사용자에게 포인트/크레딧 지급
+2. **이력 관리** - 퀘스트 완료 기록 저장
+3. **보안 검증** - HMAC 서명으로 요청 무결성 확인
 
 ## Prerequisites
 
@@ -178,7 +181,7 @@ X-Amazing-Signature: <generated_signature>
 
 ### HmacUtil 사용법
 
-이 패키지에서 제공하는 [`HmacUtil`](src/hmac.util.ts) 클래스를 사용하여 쉽게 HMAC 서명을 생성하고 검증할 수 있습니다.
+이 패키지에서 제공하는 [`HmacUtil`](src/typescript/hmac.util.ts) 클래스를 사용하여 쉽게 HMAC 서명을 생성하고 검증할 수 있습니다.
 
 #### 기본 사용법
 

@@ -1,2 +1,4 @@
 .idea
 .claude
+yarn.lock
+node_modules
