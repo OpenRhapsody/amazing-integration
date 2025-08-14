@@ -12,7 +12,7 @@ iOS 앱에서 Amazing Quest를 WebView로 손쉽게 통합할 수 있는 솔루�
 
 ### 1. Amazing Quest URL
 다음 URL을 사용하여 Amazing Quest 서비스에 접속합니다:
-- **Production**: `https://quest.adrop.io/{channel}`
+- **Production**: `https://quest.adrop.io/{channel}_{puid}`
 
 ### 2. 프로젝트 설정
 - **iOS 최소 버전**: iOS 13.0+
@@ -27,7 +27,7 @@ iOS 앱에서 Amazing Quest를 WebView로 손쉽게 통합할 수 있는 솔루�
 import UIKit
 
 // Amazing Quest URL로 WebViewController 생성
-guard let url = URL(string: "https://quest.adrop.io/example-channel") else {
+guard let url = URL(string: "https://quest.adrop.io/example-channel_p12345") else {
     return
 }
 let webViewController = AmazingWebViewController(url: url)
