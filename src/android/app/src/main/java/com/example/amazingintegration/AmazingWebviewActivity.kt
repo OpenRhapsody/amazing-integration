@@ -26,7 +26,7 @@ import java.util.TimerTask
 class AmazingWebviewActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
-    private val url: String = "https://quest.adrop.io/app"
+    private val url: String = "https://quest.adrop.io/example-channel"
 
     private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
     private var timer: Timer? = null
