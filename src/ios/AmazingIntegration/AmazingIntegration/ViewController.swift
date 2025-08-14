@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func tapOpenAmazingQuest(_ sender: Any) {
-        guard let url = URL(string: "https://quest.adrop.io/app") else {
+        guard let url = URL(string: "https://quest.adrop.io/example-channel") else {
             return
         }
         let amazingQuestViewController = AmazingWebViewController(url: url)
