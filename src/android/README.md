@@ -11,6 +11,7 @@ Amazing Quest(quest.adrop.io) 플랫폼을 Android 앱에 통합하기 위한 We
 
 ### 1. WebView 통합
 - **URL**: `https://quest.adrop.io/{channel}_{puid}` 로드
+  - `puid`는 URLSafe한 문자열이어야 합니다.
 - JavaScript 활성화
 - DOM 스토리지 지원
 - 미디어 자동 재생 지원
