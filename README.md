@@ -62,22 +62,28 @@ X-Amazing-Signature: HMAC 서명
 
 | Name | Type | Description |
 |------|------|-------------|
-| snapshot* | string | 퀘스트 완료 식별자 (최대 36자) |
-| uid* | string | 사용자 식별자 (최대 36자) |
-| quest* | string | 퀘스트 식별자 (최대 36자) |
-| title* | string | 퀘스트 제목 (최대 255자) |
-| reward* | number | 사용자에게 지급할 리워드 금액 |
+| agency_code* | string | 매체사 코드 (amazing) |
+| service_code* | string | 서비스 코드 (quest) |
+| transaction_id* | string | 퀘스트 완료 식별자 |
+| uid* | string | 매체의 사용자 식별자 |
+| quest* | string | 퀘스트 식별자 |
+| title* | string | 퀘스트 제목 |
+| point* | number | 사용자에게 지급할 리워드 금액 |
+| reg_date* | string | 퀘스트 보상 지급일 (ISO8601 형식) |
 
 *필수 필드
 
 ### 요청 본문 예시
 ```json
 {
-  "snapshot": "507f1f77bcf86cd799439011",
+  "agency_code": "amazing",
+  "service_code": "quest",
+  "transaction_id": "507f1f77bcf86cd799439011",
   "uid": "507f191e810c19729de860ea",
   "quest": "507f1f77bcf86cd799439012",
   "title": "어메이징 마스크팩 구매하기",
-  "reward": 1000
+  "point": 1000,
+  "reg_date": "2024-01-01T12:00:00.000Z"
 }
 ```
 
@@ -113,8 +119,8 @@ if (!isValid) {
 
 HMAC 검증이 통과한 경우, 다음 단계들을 수행합니다:
 
-#### 2-1. snapshot 중복 확인
-- `snapshot`은 유니크한 퀘스트 완료 식별자입니다. 중복 처리를 방지하기 위해 이전에 처리된 적이 있는지 확인해야 합니다.
+#### 2-1. transaction_id 중복 확인
+- `transaction_id`는 유니크한 퀘스트 완료 식별자입니다. 중복 처리를 방지하기 위해 이전에 처리된 적이 있는지 확인해야 합니다.
 
 #### 2-2. 사용자 존재 확인
 - `uid`는 매체사의 사용자 식별자입니다. 실제로 존재하는 사용자인지 확인해야 합니다.
@@ -124,7 +130,7 @@ HMAC 검증이 통과한 경우, 다음 단계들을 수행합니다:
 - `title`: 퀘스트 제목 (사용자 알림이나 이력 관리에 활용)
 
 #### 2-4. 리워드 지급
-- `reward`는 어메이징 기준으로 사용자에게 지급해야 하는 크레딧(원화) 보상입니다. 매체사에서 자체 포인트로 지급하고 싶은 경우, 환율이나 비율을 확인하여 알맞은 포인트를 직접 지급하면 됩니다.
+- `point`는 어메이징 기준으로 사용자에게 지급해야 하는 크레딧(원화) 보상입니다. 매체사에서 자체 포인트로 지급하고 싶은 경우, 환율이나 비율을 확인하여 알맞은 포인트를 직접 지급하면 됩니다.
 
 ### 3. 응답 반환
 
@@ -153,7 +159,7 @@ export type ExceptionCodeType =
     | 'HMAC_AUTH_ERROR'     // HMAC 인증 오류
     | 'INVALID_PARAMS'      // 파라미터 오류
     | 'USER_NOT_FOUND'      // 유효하지 않은 사용자 ID
-    | 'DUPLICATED_SNAPSHOT' // 중복 콜백
+    | 'DUPLICATED_TX'       // 중복 콜백
     | 'UNCATCHED'           // 기타 오류
 ```
 
@@ -196,11 +202,14 @@ const signature = HmacUtil.generateSignature(
     timestamp,
     '', // 쿼리 스트링 (없으면 빈 문자열)
     {
-        snapshot: "507f1f77bcf86cd799439011",
+        agency_code: "amazing",
+        service_code: "quest",
+        transaction_id: "507f1f77bcf86cd799439011",
         uid: "507f191e810c19729de860ea",
         quest: "507f1f77bcf86cd799439012",
         title: "어메이징 마스크팩 구매하기",
-        reward: 1000
+        point: 1000,
+        reg_date: "2024-01-01T12:00:00.000Z"
     },
     'its_amazing_secret'
 )
@@ -350,11 +359,14 @@ class HmacUtil:
 if __name__ == "__main__":
     # Test data
     payload = {
-        "snapshot": "507f1f77bcf86cd799439011",
+        "agency_code": "amazing",
+        "service_code": "quest",
+        "transaction_id": "507f1f77bcf86cd799439011",
         "uid": "507f191e810c19729de860ea", 
         "quest": "507f1f77bcf86cd799439012",
         "title": "어메이징 마스크팩 구매하기",
-        "reward": 1000
+        "point": 1000,
+        "reg_date": "2024-01-01T12:00:00.000Z"
     }
     
     secret_key = "its_amazing_secret"
